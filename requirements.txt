@@ -1,0 +1,37 @@
+# =====================================================================
+# Dependensi Praktikum Sistem Terdistribusi (S2)
+# Modul : Sensor Suhu Terdistribusi — MQTT vs REST
+#
+# Instalasi (Windows, dari folder Sister/):
+#   py -m venv .venv
+#   .venv\Scripts\pip install -r requirements.txt
+#
+# Untuk versi persis yang sama di semua laptop kelompok:
+#   .venv\Scripts\pip install -r requirements-lock.txt
+#
+# Catatan: hanya pustaka pihak ketiga. Modul bawaan Python
+# (csv, json, argparse, ssl, socket, threading, ...) tidak dicantumkan.
+# =====================================================================
+
+# --- Protokol & komunikasi -------------------------------------------
+paho-mqtt>=2.0,<3        # MQTT/pub.py, MQTT/sub.py (CallbackAPIVersion.VERSION2)
+requests>=2.31           # REST/client.py, REST/poller.py
+flask>=3.0               # REST/server.py
+
+# --- Monitoring eksperimen -------------------------------------------
+psutil>=5.9              # tools/cpu_monitor.py (beban CPU server/broker, Blok E)
+
+# --- Analisis data ---------------------------------------------------
+pandas>=2.1              # analysis/analyze.py (baca log CSV, agregasi)
+numpy>=1.26              # persentil p50/p95/p99, IQR
+scipy>=1.11              # uji statistik antar-kondisi (opsional)
+
+# --- Visualisasi -----------------------------------------------------
+matplotlib>=3.8          # grafik untuk laporan
+
+# =====================================================================
+# Alat non-Python (pasang manual, tidak lewat pip):
+#   - Wireshark  : https://www.wireshark.org/download.html   (Blok C, overhead)
+#   - ngrok      : https://ngrok.com/download                 (Blok C, lintas jaringan)
+#   - Mosquitto  : https://mosquitto.org/download/            (opsional, broker lokal)
+# =====================================================================

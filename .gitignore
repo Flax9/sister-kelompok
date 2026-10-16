@@ -1,0 +1,40 @@
+# =====================================================================
+# .gitignore — Praktikum Sensor Suhu MQTT vs REST
+# Hanya menyertakan skrip & modul praktikum wajib.
+# =====================================================================
+
+# --- REPOSITORI / FOLDER LAIN (HARAM DISENTUH) -----------------------
+distributed-system/
+proc&thread/
+img/
+
+# --- DOKUMEN / CATATAN PRAKTIKUM LAIN --------------------------------
+LKM_Proses_dan_Thread.docx.md
+log2.md
+
+# --- PYTHON ENVIRONMENT & CACHE --------------------------------------
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- RAHASIA & KREDENSIAL (JANGAN PERNAH DI-COMMIT) -------------------
+.env
+.env*
+!MQTT/.env.example
+*.crt
+*.pem
+
+# --- LOG & OUTPUT EKSPERIMEN MENTAH (LOKAL TIAP LAPTOP) --------------
+logs/
+*.csv
+analysis/out/
+
+# --- IDE & SISTEM OPERASI --------------------------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
