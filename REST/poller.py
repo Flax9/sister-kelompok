@@ -45,7 +45,9 @@ def run_poller(args):
         while True:
             polls += 1
             try:
-                resp = http.get(url, timeout=args.timeout)
+                resp = http.get(url, params={"consumer_id": args.consumer_id},
+                                headers={"X-Consumer-Id": args.consumer_id},
+                                timeout=args.timeout)
                 t_recv_ms = now_ms()
                 body = resp.content
                 data = json.loads(body)
