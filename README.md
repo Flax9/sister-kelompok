@@ -1,5 +1,12 @@
 # Eksperimen Sensor Suhu Terdistribusi: MQTT vs REST
 
+# Anggota Kelompok
+- Jildan Adam Zein
+- Muhammad Ahsanul Furqon Al Fikri
+- Muhammad Rakha Rasyadi
+- Adwa` Muhammad Asytar
+
+
 Repositori praktikum mata kuliah **Sistem Terdistribusi (S2)** untuk eksperimen komparasi protokol komunikasi IoT/M2M:
 - **MQTT**: Publish/Subscribe berbasis broker (EMQX Cloud Serverless over TLS).
 - **REST**: Request/Response berbasis HTTP POST / GET (Flask server).
