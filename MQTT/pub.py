@@ -159,5 +159,5 @@ if __name__ == "__main__":
     add_log_args(parser)
 
     args = parser.parse_args()
-    args.client_id = args.client_id or f"pub-{args.node_id}"
+    args.client_id = args.client_id or (f"pub-{args.node_id}" if args.persistent else f"pub-{args.node_id}-{os.getpid()}")
     run_publisher(args)

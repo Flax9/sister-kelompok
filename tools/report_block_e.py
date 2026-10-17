@@ -60,6 +60,7 @@ def analyze_block_e_run(run_id):
             if valid.empty:
                 continue
 
+            uniq = valid.drop_duplicates(["node_id", "sequence_no"])
             # Jika terjadi clock drift negatif antar laptop, gunakan nilai absolut atau offset kompensasi
             raw_lat = uniq["lat"].to_numpy(dtype=float)
             lat_med = float(np.median(raw_lat))

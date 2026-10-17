@@ -14,7 +14,7 @@ DEFAULT_LOG_DIR = os.path.join(ROOT_DIR, "logs")
 
 PUBLIC_BROKER = "broker.hivemq.com"
 PUBLIC_PORT = 1883
-DEFAULT_TOPIC = "sister/filkom_kelompok/temp"
+DEFAULT_TOPIC = "sister/temp"
 
 
 def load_dotenv(path=None):

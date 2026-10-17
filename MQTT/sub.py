@@ -120,5 +120,5 @@ if __name__ == "__main__":
     add_log_args(parser)
 
     args = parser.parse_args()
-    args.client_id = args.client_id or f"sub-{args.consumer_id}"
+    args.client_id = args.client_id or (f"sub-{args.consumer_id}" if args.persistent else f"sub-{args.consumer_id}-{os.getpid()}")
     run_subscriber(args)
