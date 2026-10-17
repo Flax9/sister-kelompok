@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Auto Fault Injector (Blok D) — Versi Standar Non-Admin
-Memutuskan koneksi Wi-Fi selama 15 detik via 'netsh wlan disconnect'
-(TIDAK memerlukan hak akses Administrator), lalu menyambungkan kembali.
+Auto Fault Injector (Blok D) — Versi Presisi Non-Admin
+Memaksa Wi-Fi tetap terputus selama tepat 15 detik penuh (mencegah Windows auto-reconnect)
+lalu menyambungkan kembali secara otomatis.
 """
 
 import os
@@ -32,7 +32,7 @@ def get_current_wifi_profile():
 
 
 def disconnect_wifi():
-    """Putuskan koneksi Wi-Fi (Bisa jalan tanpa hak Administrator)."""
+    """Putuskan koneksi Wi-Fi."""
     try:
         res = subprocess.run("netsh wlan disconnect", shell=True, capture_output=True, text=True)
         return res.returncode == 0
@@ -54,7 +54,7 @@ def reconnect_wifi(profile_name=None):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Auto Fault Injector Wi-Fi 15s")
+    ap = argparse.ArgumentParser(description="Auto Fault Injector Wi-Fi 15s Presisi")
     ap.add_argument("--protocol", required=True, choices=["mqtt", "rest"])
     ap.add_argument("--duration", type=int, default=15, help="Durasi putus (detik, default: 15)")
     add_log_args(ap)
@@ -66,13 +66,14 @@ def main():
     log = CsvLogger(path, ["timestamp_iso", "t_ms", "protocol", "event", "outage_no"])
 
     print("=" * 60)
-    print(f"AUTO FAULT INJECTOR BLOK D ({args.protocol.upper()})")
-    print(f"Profil Wi-Fi Aktif : {active_profile or 'Tidak terdeteksi (Gunakan tombol Fn+Wi-Fi jika perlu)'}")
-    print(f"Durasi Gangguan    : {args.duration} detik")
+    print(f"AUTO FAULT INJECTOR BLOK D ({args.protocol.upper()}) - EXACT TIMER")
+    print(f"Profil Wi-Fi Aktif : {active_profile or 'Default profile'}")
+    print(f"Durasi Gangguan    : {args.duration} detik tepat")
     print(f"Log tersimpan di   : {path}")
     print("=" * 60)
-    print("Metode: 'netsh wlan disconnect' (Bekerja langsung tanpa hak Administrator)")
-    print("\nTekan [ENTER] saat Anda siap memulai simulasi putus 15 detik...")
+    print("Mekanisme: Memaksa disconnect kontinu selama 15 detik penuh")
+    print("agar Windows tidak melakukan auto-reconnect prematur.")
+    print("\nTekan [ENTER] saat Anda siap memulai simulasi...")
     print("(Ketik q lalu ENTER untuk keluar)\n")
 
     outage = 0
@@ -87,20 +88,27 @@ def main():
             t_down = now_ms()
             log.write([iso_now(), t_down, args.protocol, "putus", outage])
             
-            # Putuskan Wi-Fi via netsh wlan disconnect
-            disconnect_wifi()
-            print(f"  >>> WAKTU PUTUS: {time.strftime('%H:%M:%S')} (Hitung mundur {args.duration}s)...")
+            start_mono = time.monotonic()
+            print(f"  >>> WAKTU PUTUS : {time.strftime('%H:%M:%S')}")
 
-            for remaining in range(args.duration, 0, -1):
-                print(f"      Jaringan Putus... sisa {remaining} detik", end="\r")
-                time.sleep(1)
+            # Loop pemutusan kontinu agar Windows tidak auto-reconnect sendiri sebelum 15 detik
+            while True:
+                elapsed = time.monotonic() - start_mono
+                remaining = args.duration - elapsed
+                if remaining <= 0:
+                    break
+                
+                # Paksa putus setiap interval
+                disconnect_wifi()
+                print(f"      Wi-Fi Terputus... sisa {remaining:.1f} detik   ", end="\r")
+                time.sleep(0.4)
 
-            print(f"\n[#{outage}] Menyambungkan kembali Wi-Fi...")
+            print(f"\n[#{outage}] Waktu gangguan 15 detik selesai. Menyambungkan kembali Wi-Fi...")
             reconnect_wifi(active_profile)
             t_up = now_ms()
             log.write([iso_now(), t_up, args.protocol, "pulih", outage])
-            print(f"  >>> WAKTU PULIH: {time.strftime('%H:%M:%S')} (Durasi: {(t_up - t_down)/1000:.1f} detik)\n")
-            print("-" * 50)
+            print(f"  >>> WAKTU PULIH : {time.strftime('%H:%M:%S')} (Durasi gangguan: {(t_up - t_down)/1000:.2f} detik)\n")
+            print("-" * 55)
 
     except KeyboardInterrupt:
         print("\nDibatalkan oleh pengguna. Menyambungkan kembali Wi-Fi...")
